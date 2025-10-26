@@ -156,7 +156,7 @@ export default function Home() {
         </button>
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-3 mb-6">
+          <div className="mb-6">
             <Sparkles
               className={`w-10 h-10 ${
                 isDark ? "text-indigo-400" : "text-indigo-600"
