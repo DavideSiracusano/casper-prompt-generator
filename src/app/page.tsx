@@ -178,7 +178,7 @@ export default function Home() {
               isDark ? "text-slate-400" : "text-slate-600"
             } max-w-2xl mx-auto mb-8`}
           >
-            AI-Powered Prompt Builder per sviluppatori e creativi. Genera codice
+            AI-Powered Prompt Builder per sviluppatori e creativi. Genera prompt
             frontend di alta qualità in pochi secondi.
           </p>
 
