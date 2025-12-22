@@ -31,3 +31,13 @@ Un'applicazione web sviluppata con **Next.js** e **TypeScript** che permette agl
 - [Lucide React](https://lucide.dev/) per le icone SVG
 
 ## Demo -> https://casper-prompt-generator.vercel.app/
+
+## Docker
+
+Build locale:
+
+docker-compose build
+docker-compose up -d Oppure usando l'immagine su Docker Hub:
+
+docker pull sirdavi/casper-prompt-generator:latest
+docker-compose up
