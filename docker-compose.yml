@@ -1,0 +1,26 @@
+
+
+services:
+  casper-app:
+    # Se l'immagine non esiste localmente, docker-compose farà il build usando il Dockerfile
+    image: sirdavi/casper-prompt-generator:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Nome del container per riconoscerlo facilmente
+    container_name: casper-prompt-generator
+
+    # Mappa la porta 3000 del container sulla 3000 della macchina host
+    ports:
+      - "3000:3000"
+
+    # Variabili d'ambiente passate al container
+    environment:
+      # Ambiente di esecuzione in produzione
+      NODE_ENV: production
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY}"
+
+    # Riavvia automaticamente il container se si ferma inaspettatamente
+    restart: unless-stopped
+
