@@ -15,11 +15,16 @@ services:
     ports:
       - "3000:3000"
 
+    # Legge le variabili d'ambiente dal file .env.local
+    env_file:
+      - .env.local
+    
     # Variabili d'ambiente passate al container
     environment:
       # Ambiente di esecuzione in produzione
       NODE_ENV: production
-      GOOGLE_API_KEY: "${GOOGLE_API_KEY}"
+      # Nota: GEMINI_API_KEY viene letta automaticamente dal file .env.local tramite env_file
+      
 
     # Riavvia automaticamente il container se si ferma inaspettatamente
     restart: unless-stopped
