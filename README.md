@@ -90,4 +90,3 @@ docker-compose up -d
 
 - [Docker](https://www.docker.com/get-started) installato sul tuo sistema
 - [Docker Compose](https://docs.docker.com/compose/install/) (incluso in Docker Desktop)
-- Chiave API di Google Gemini (opzionale, solo se vuoi testare la generazione dei prompt)
