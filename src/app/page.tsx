@@ -43,11 +43,33 @@ export default function Home() {
         body: JSON.stringify({ context, audience, style, platforms, elements }),
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        setResult(data.result);
-      } else {
-        setResult(`Errore API: ${data.error}`);
+      const text = await res.text(); // Leggi la risposta come testo
+      console.log("API response text:", text); // Log della risposta
+
+      try {
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          const data = JSON.parse(text);
+
+          if (res.ok) {
+            setResult(data.result);
+          } else {
+            setResult(`Errore API: ${data.error || "Errore sconosciuto"}`);
+          }
+        } else {
+          // Non JSON (probabilmente HTML 404/500) — mostra testo grezzo per aiutare il debug
+          setResult(
+            `Errore API: ricevuta risposta non JSON (status ${res.status}). Contenuto: ${text}`
+          );
+        }
+      } catch (parseError) {
+        setResult(
+          `Errore parsing JSON: ${
+            parseError instanceof Error
+              ? parseError.message
+              : String(parseError)
+          }\nResponse: ${text}`
+        );
       }
     } catch (err) {
       setResult(
@@ -119,8 +141,8 @@ export default function Home() {
     <div
       className={`${
         isDark
-          ? "bg-linear-to-br from-slate-900 via-slate-800 to-slate-900"
-          : "bg-linear-to-br from-slate-50 via-white to-slate-100"
+          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
       } min-h-screen transition-all duration-700`}
     >
       {/* Animated background orbs */}
@@ -163,7 +185,7 @@ export default function Home() {
               } animate-pulse`}
             />
             <h1
-              className={`text-5xl font-bold bg-linear-to-r ${
+              className={`text-5xl font-bold bg-gradient-to-r ${
                 isDark
                   ? "from-indigo-400 to-purple-400"
                   : "from-indigo-600 to-purple-600"
@@ -313,8 +335,8 @@ export default function Home() {
                 : "hover:scale-105 hover:shadow-2xl"
             } ${
               isDark
-                ? "bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500"
-                : "bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500"
+                : "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
             }`}
             aria-label="Genera prompt AI"
           >
@@ -325,7 +347,7 @@ export default function Home() {
               {loading ? "Generazione in corso..." : "Genera Prompt"}
             </span>
             {!loading && (
-              <div className="absolute inset-0 bg-linear-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             )}
           </button>
         </div>

@@ -32,9 +32,12 @@ COPY . .
 # Esegue il build di Next.js (genera la cartella .next)
 RUN npm run build
 
+# Rimuove le devDependencies per ridurre la dimensione dell'immagine runtime
+RUN npm prune --production
+
 # --- STAGE 3: runner -------------------------------------------------
 # Immagine finale di produzione che esegue l'app già buildata
-FROM base AS runner
+FROM node:20-alpine AS runner
 
 # Imposta l'ambiente di runtime su produzione
 ENV NODE_ENV=production
@@ -42,18 +45,35 @@ ENV NODE_ENV=production
 # Disabilita la telemetria di Next.js (niente invio dati a Vercel)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Crea un utente non-root per sicurezza
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
 # Cartella di lavoro per il runtime
 WORKDIR /app
 
-# Copia solo i file necessari dalla fase di build
-COPY --from=builder /app/next.config.* ./ 
-COPY --from=builder /app/package.json ./ 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
+# Copia il bundle standalone e le risorse statiche generate da Next
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+
+# Installa curl per permettere l'healthcheck nel container
+RUN apk add --no-cache curl
+
+# Passa all'utente non-root
+USER nextjs
 
 # Espone la porta su cui gira Next.js dentro il container
 EXPOSE 3000
 
-# Comando di avvio: esegue l'app Next.js in modalità produzione
-CMD ["npm", "start"]
+# Imposta la variabile d'ambiente per la porta
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Healthcheck integrato nell'immagine (usato anche da docker-compose)
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Comando di avvio: esegue il server standalone generato da Next
+CMD ["node", "server.js"]

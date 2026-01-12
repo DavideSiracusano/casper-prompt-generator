@@ -1,31 +1,60 @@
-
+version: "3.8"
 
 services:
   casper-app:
-    # Se l'immagine non esiste localmente, docker-compose farà il build usando il Dockerfile
     image: sirdavi/casper-prompt-generator:latest
     build:
       context: .
       dockerfile: Dockerfile
+      target: runner
 
-    # Nome del container per riconoscerlo facilmente
     container_name: casper-prompt-generator
 
-    # Mappa la porta 3000 del container sulla 3000 della macchina host
     ports:
       - "3000:3000"
 
-    # Legge le variabili d'ambiente dal file .env.local
     env_file:
       - .env.local
-    
-    # Variabili d'ambiente passate al container
-    environment:
-      # Ambiente di esecuzione in produzione
-      NODE_ENV: production
-      # Nota: GEMINI_API_KEY viene letta automaticamente dal file .env.local tramite env_file
-      
 
-    # Riavvia automaticamente il container se si ferma inaspettatamente
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Dev service: usa il codice sorgente montato e avvia next in dev mode
+  casper-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+
+    container_name: casper-prompt-generator-dev
+
+    volumes:
+      - ./:/app:delegated
+      - node_modules:/app/node_modules
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env.local
+
+    environment:
+      NODE_ENV: development
+
+    # Passiamo l'host e la porta in modo esplicito per essere raggiungibili dalla rete
+    command: npm run dev -- -H 0.0.0.0 --port 3000
+
+    profiles:
+      - dev
+
+volumes:
+  node_modules: {}

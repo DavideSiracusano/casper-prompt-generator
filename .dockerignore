@@ -18,6 +18,4 @@ out
 .DS_Store
 Thumbs.db
 
-Dockerfile
-docker-compose.yml
 
