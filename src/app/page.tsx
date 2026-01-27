@@ -59,7 +59,7 @@ export default function Home() {
         } else {
           // Non JSON (probabilmente HTML 404/500) — mostra testo grezzo per aiutare il debug
           setResult(
-            `Errore API: ricevuta risposta non JSON (status ${res.status}). Contenuto: ${text}`
+            `Errore API: ricevuta risposta non JSON (status ${res.status}). Contenuto: ${text}`,
           );
         }
       } catch (parseError) {
@@ -68,12 +68,12 @@ export default function Home() {
             parseError instanceof Error
               ? parseError.message
               : String(parseError)
-          }\nResponse: ${text}`
+          }\nResponse: ${text}`,
         );
       }
     } catch (err) {
       setResult(
-        `Errore di rete: ${err instanceof Error ? err.message : String(err)}`
+        `Errore di rete: ${err instanceof Error ? err.message : String(err)}`,
       );
     } finally {
       setLoading(false);
@@ -141,8 +141,8 @@ export default function Home() {
     <div
       className={`${
         isDark
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
+          ? "bg-linear-to-br from-slate-900 via-slate-800 to-slate-900"
+          : "bg-linear-to-br from-slate-50 via-white to-slate-100"
       } min-h-screen transition-all duration-700`}
     >
       {/* Animated background orbs */}
@@ -185,7 +185,7 @@ export default function Home() {
               } animate-pulse`}
             />
             <h1
-              className={`text-5xl font-bold bg-gradient-to-r ${
+              className={`text-5xl font-bold bg-linear-to-r ${
                 isDark
                   ? "from-indigo-400 to-purple-400"
                   : "from-indigo-600 to-purple-600"
@@ -278,8 +278,8 @@ export default function Home() {
                         ? "border-indigo-500 shadow-lg shadow-indigo-500/20"
                         : "border-indigo-400 shadow-lg shadow-indigo-400/20"
                       : isDark
-                      ? "border-slate-700"
-                      : "border-slate-200"
+                        ? "border-slate-700"
+                        : "border-slate-200"
                   } transition-all duration-300`}
                 >
                   <div
@@ -335,8 +335,8 @@ export default function Home() {
                 : "hover:scale-105 hover:shadow-2xl"
             } ${
               isDark
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500"
-                : "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+                ? "bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500"
+                : "bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
             }`}
             aria-label="Genera prompt AI"
           >
@@ -347,7 +347,7 @@ export default function Home() {
               {loading ? "Generazione in corso..." : "Genera Prompt"}
             </span>
             {!loading && (
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-linear-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             )}
           </button>
         </div>
